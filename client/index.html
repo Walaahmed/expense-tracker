@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2f7d6d" />
+    <title>Spendly – Expense Tracker</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232f7d6d'/><path d='M8 22V14M16 22V9M24 22v-6' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- display=swap: النص يظهر بخط النظام فورًا وبعدين يتبدّل لما الخط يوصل (مفيش شاشة فاضية) -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <!--
+      Splash screen: الـ CSS هنا inline عشان يتحمّل مع أول بايت من الصفحة من غير أي ملف تاني.
+      فالمستخدم يشوف الشعار المتحرك فورًا بدل شاشة بيضاء، حتى قبل ما React يتحمّل.
+      React بيشيله بعد ما التطبيق يجهز (src/splash.js).
+    -->
+    <style>
+      :root { --s-bg: #f6f4ef; --s-ink: #1d2b27; --s-muted: #66756f; --s-accent: #2f7d6d; --s-line: #e4e0d6; }
+      @media (prefers-color-scheme: dark) {
+        :root { --s-bg: #121715; --s-ink: #e8efe9; --s-muted: #93a49c; --s-accent: #4fb39d; --s-line: #2a3430; }
+      }
+      html, body { margin: 0; background: var(--s-bg); }
+      #splash {
+        position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center;
+        background: var(--s-bg); color: var(--s-ink);
+        font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        transition: opacity .45s ease, transform .45s ease, visibility 0s linear .45s;
+      }
+      #splash.hide { opacity: 0; transform: scale(1.04); visibility: hidden; pointer-events: none; }
+      .sp-box { display: grid; justify-items: center; gap: 18px; }
+      .sp-logo {
+        width: 76px; height: 76px; border-radius: 22px; background: var(--s-accent);
+        display: grid; place-items: center; position: relative;
+        box-shadow: 0 14px 34px -10px var(--s-accent);
+        animation: sp-pop .7s cubic-bezier(.2,.9,.3,1.4) both;
+      }
+      .sp-logo::after {
+        content: ''; position: absolute; inset: -6px; border-radius: 28px;
+        border: 2px solid var(--s-accent); opacity: 0; animation: sp-ring 1.8s ease-out .6s infinite;
+      }
+      .sp-bars { display: flex; align-items: flex-end; gap: 7px; height: 34px; }
+      .sp-bars i {
+        width: 8px; border-radius: 4px; background: #fff; height: 100%;
+        transform-origin: bottom; transform: scaleY(.25);
+        animation: sp-bar 1.1s ease-in-out infinite;
+      }
+      .sp-bars i:nth-child(1) { height: 55%; animation-delay: 0s; }
+      .sp-bars i:nth-child(2) { height: 100%; animation-delay: .15s; }
+      .sp-bars i:nth-child(3) { height: 75%; animation-delay: .3s; }
+      .sp-name { font-size: 1.7rem; font-weight: 700; letter-spacing: -.02em; display: flex; }
+      .sp-name span { display: inline-block; opacity: 0; transform: translateY(10px); animation: sp-letter .5s ease forwards; }
+      .sp-tag { color: var(--s-muted); font-size: .95rem; opacity: 0; animation: sp-fade .6s ease 1s forwards; }
+      .sp-track { width: 120px; height: 4px; border-radius: 4px; background: var(--s-line); overflow: hidden; opacity: 0; animation: sp-fade .4s ease .8s forwards; }
+      .sp-track b { display: block; width: 40%; height: 100%; border-radius: 4px; background: var(--s-accent); animation: sp-slide 1.2s ease-in-out infinite; }
+      @keyframes sp-pop { from { opacity: 0; transform: scale(.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
+      @keyframes sp-ring { 0% { opacity: .55; transform: scale(.92); } 100% { opacity: 0; transform: scale(1.35); } }
+      @keyframes sp-bar { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+      @keyframes sp-letter { to { opacity: 1; transform: none; } }
+      @keyframes sp-fade { to { opacity: 1; } }
+      @keyframes sp-slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(300%); } }
+      @media (prefers-reduced-motion: reduce) {
+        #splash *, #splash *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important; }
+        .sp-name span, .sp-tag, .sp-track { opacity: 1; transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="splash" role="status" aria-label="Loading Spendly">
+      <div class="sp-box">
+        <div class="sp-logo"><div class="sp-bars"><i></i><i></i><i></i></div></div>
+        <div class="sp-name" aria-hidden="true">
+          <span style="animation-delay:.25s">S</span><span style="animation-delay:.30s">p</span><span style="animation-delay:.35s">e</span><span style="animation-delay:.40s">n</span><span style="animation-delay:.45s">d</span><span style="animation-delay:.50s">l</span><span style="animation-delay:.55s">y</span>
+        </div>
+        <div class="sp-tag">Know where your money goes</div>
+        <div class="sp-track"><b></b></div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

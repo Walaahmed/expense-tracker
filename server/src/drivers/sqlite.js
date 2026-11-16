@@ -12,8 +12,7 @@ export function openSqlite(file = ':memory:') {
     return s;
   };
 
-  // الاتصال واحد، فلازم الـ transaction تاخد القفل طول مدتها. غير كده طلب تاني
-  // ممكن يدخل في نص الـ BEGIN..COMMIT ويتعمله rollback غلط.
+  
   let tail = Promise.resolve();
   const exclusive = (fn) => {
     const result = tail.then(fn);

@@ -1,12 +1,4 @@
-// SQLite عن طريق node:sqlite المدمجة في Node (من غير تثبيت). بنستخدمه في التطوير والاختبارات.
-//
-// الـ interface (نفسه في postgres.js، فالـ models مش بتعرف أي قاعدة بتشتغل تحتها):
-//   get(sql, params)  -> صف واحد أو undefined
-//   all(sql, params)  -> مصفوفة صفوف
-//   run(sql, params)  -> { changes }
-//   exec(sql)         -> تنفيذ كذا statement (للـ schema)
-//   transaction(fn)   -> fn(tx) جوه BEGIN/COMMIT (ROLLBACK لو حصل خطأ)
-//   close()
+
 import { DatabaseSync } from 'node:sqlite';
 
 export function openSqlite(file = ':memory:') {

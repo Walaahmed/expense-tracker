@@ -1,4 +1,5 @@
-
+// اختبارات تكامل لـ API الحقيقي (Express + JWT + DB في الذاكرة).
+// محتاجة npm install الأول لأنها بتستخدم express و bcryptjs و jsonwebtoken.
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { openDb } from '../src/db.js';

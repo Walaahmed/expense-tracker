@@ -35,15 +35,12 @@ export function authRouter(db) {
 
       if (await findUserByEmail(db, email)) return emailTaken(res);
 
-      // bcrypt بيعمل hash للباسورد (مع salt عشوائي). مبنخزنش الباسورد نفسه أبداً.
-      const passwordHash = await bcrypt.hash(password, 10);
+            const passwordHash = await bcrypt.hash(password, 10);
       let user;
       try {
         user = await createUser(db, { name, email, passwordHash });
       } catch (err) {
-        // طلبين بنفس الإيميل في نفس اللحظة: الاتنين عدّوا فحص findUserByEmail،
-        // وقاعدة البيانات (UNIQUE) هي اللي بترفض التاني. SQLite و Postgres بيبلّغوا بشكل مختلف.
-        if (err.code === '23505' || /UNIQUE constraint/i.test(err.message)) return emailTaken(res);
+                if (err.code === '23505' || /UNIQUE constraint/i.test(err.message)) return emailTaken(res);
         throw err;
       }
       res.status(201).json({ token: signToken(user.id), user });
@@ -58,8 +55,7 @@ export function authRouter(db) {
       const password = String(req.body?.password ?? '');
 
       const row = await findUserByEmail(db, email);
-      // نفس الرسالة للإيميل الغلط والباسورد الغلط، عشان محدش يعرف مين مسجل عندنا
-      const ok = row && (await bcrypt.compare(password, row.password_hash));
+           const ok = row && (await bcrypt.compare(password, row.password_hash));
       if (!ok) return res.status(401).json({ error: 'Invalid email or password' });
 
       const user = { id: row.id, name: row.name, email: row.email };
@@ -69,8 +65,7 @@ export function authRouter(db) {
     }
   });
 
-  // الواجهة بتنادي عليه أول ما تفتح عشان تعرف لو التوكن المحفوظ لسه شغال
-  router.get('/me', requireAuth, asyncHandler(async (req, res) => {
+    router.get('/me', requireAuth, asyncHandler(async (req, res) => {
     const user = await findUserById(db, req.userId);
     if (!user) return res.status(401).json({ error: 'User no longer exists' });
     res.json({ user });

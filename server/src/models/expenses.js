@@ -14,14 +14,15 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export const isValidMonth = (m) => typeof m === 'string' && MONTH_RE.test(m);
 
- .
+// Date.parse('2026-02-31') بترجع رقم عادي (بتلف على مارس)، فبنقارن بعد التحويل
+// عشان نرفض التواريخ المستحيلة.
 export function isValidDate(s) {
   if (typeof s !== 'string' || !DATE_RE.test(s)) return false;
   const d = new Date(`${s}T00:00:00Z`);
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
 }
 
-
+/** بترجع { errors } لو فيه غلط، أو { value } نضيف وجاهز للتخزين. */
 export function validateExpense(body) {
   const b = body && typeof body === 'object' ? body : {};
   const errors = {};
